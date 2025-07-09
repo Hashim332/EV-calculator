@@ -1,8 +1,9 @@
-import React from "react";
+import Navbar from "../components/Navbar";
 
 function App() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-start p-6 bg-gray-50'>
+    <div className='min-h-screen flex flex-col items-center justify-start bg-gray-50'>
+      <Navbar />
       <header className='w-full max-w-md mb-8'>
         <h1 className='text-2xl font-bold text-center m-0'>
           EV Car Cost Calculator
