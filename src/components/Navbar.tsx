@@ -1,5 +1,3 @@
-import React from "react";
-
 const Navbar = () => {
   return (
     <nav className='w-full bg-white shadow flex items-center justify-between px-6 py-4 mb-8'>
