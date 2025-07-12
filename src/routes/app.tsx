@@ -1,6 +1,72 @@
 import Navbar from "../components/Navbar";
+import { Analytics } from "@vercel/analytics/next"
+import { useState, useEffect } from 'react'
+import { supabase } from '../supabase.js'
+import VehicleDropdown from '../components/VehicleDropdown'
+
+interface Vehicle {
+  uuid: string
+  make: string
+  model: string
+  segment: string
+  // Add other vehicle properties as needed
+}
 
 function App() {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedEV, setSelectedEV] = useState<string | null>(null)
+  const [selectedPetrol, setSelectedPetrol] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const { data, error: fetchError } = await supabase
+          .from('vehicle-data')
+          .select('*')
+        
+        if (fetchError) {
+          throw fetchError
+        }
+        
+        setVehicles(data || [])
+        console.log('Fetched vehicles:', data)
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
+        setError(errorMessage)
+        console.error('Error fetching vehicles:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchVehicles()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50'>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
+        <p className="mt-4 text-gray-600">Loading vehicles...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50'>
+        <div className="text-red-600 text-center max-w-md">
+          <h2 className="text-xl font-semibold mb-2">Error Loading Vehicles</h2>
+          <p className="text-sm">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='min-h-screen flex flex-col items-center justify-start bg-gray-50'>
       <Navbar />
@@ -25,18 +91,13 @@ function App() {
         <section className='w-full flex flex-col md:flex-row gap-10 mb-8'>
           {/* EV Column */}
           <div className='flex-1 bg-violet-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
-            <label
-              htmlFor='ev-select'
-              className='mb-3 font-medium text-violet-700 text-lg'
-            >
-              Select EV
-            </label>
-            <select
-              id='ev-select'
-              className='mb-6 p-3 rounded border border-violet-200 w-full text-base'
-            >
-              <option>Tesla Model 3</option>
-            </select>
+            <VehicleDropdown
+              vehicles={vehicles}
+              selectedId={selectedEV}
+              onSelect={setSelectedEV}
+              label="Select EV"
+              className="text-violet-700"
+            />
             <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center'>
               <img
                 src='https://via.placeholder.com/240x120?text=EV'
@@ -65,18 +126,13 @@ function App() {
           </div>
           {/* Petrol Column */}
           <div className='flex-1 bg-orange-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
-            <label
-              htmlFor='petrol-select'
-              className='mb-3 font-medium text-orange-700 text-lg'
-            >
-              Select Petrol Car
-            </label>
-            <select
-              id='petrol-select'
-              className='mb-6 p-3 rounded border border-orange-200 w-full text-base'
-            >
-              <option>Mercedes C-Class</option>
-            </select>
+            <VehicleDropdown
+              vehicles={vehicles}
+              selectedId={selectedPetrol}
+              onSelect={setSelectedPetrol}
+              label="Select Petrol Car"
+              className="text-orange-700"
+            />
             <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center'>
               <img
                 src='https://via.placeholder.com/240x120?text=Mercedes+C-Class'
@@ -114,6 +170,10 @@ function App() {
         </div>
         <hr className='w-full border-gray-200 mb-6' />
         <p className='text-gray-500 text-center'>Next section here</p>
+        {/* Debug info - can be removed later */}
+        <div className='text-xs text-gray-400 text-center mt-4'>
+          Vehicles loaded: {vehicles.length}
+        </div>
       </main>
     </div>
   );
