@@ -1,15 +1,25 @@
 import Navbar from "../components/Navbar";
-import { Analytics } from "@vercel/analytics/next"
 import { useState, useEffect } from 'react'
-import { supabase } from '../supabase.js'
+import { supabase } from '../supabase.ts'
 import VehicleDropdown from '../components/VehicleDropdown'
+import VehicleDetails from '../components/VehicleDetails'
 
 interface Vehicle {
   uuid: string
   make: string
   model: string
+  type: string
+  msrp_gbp: number
+  lease_monthly: number
+  max_range: number
+  battery_size: number
+  efficiency: number
+  efficiency_mpg: number
   segment: string
-  // Add other vehicle properties as needed
+  depreciation_3yr_percent: number
+  maintenance_gbp_per_year: number
+  fuel_type: string
+  image_url?: string
 }
 
 function App() {
@@ -82,9 +92,7 @@ function App() {
             Lease or Buy? Make the Smart Choice!
           </h2>
           <p className='text-gray-600'>
-            Use our tool to compare the true cost of leasing an EV versus buying
-            a petrol or diesel car. Factor in fuel, maintenance, and more to see
-            which option saves you money and fits your lifestyle best.
+            This website helps you compare the cost of leasing an electric vehicle (EV), which is a popular option right now, versus buying a petrol or diesel (ICE) car outright. See how lease payments, running costs, and resale values stack up so you can make the most informed decision for your needs.
           </p>
         </section>
         {/* Comparison Section */}
@@ -92,73 +100,30 @@ function App() {
           {/* EV Column */}
           <div className='flex-1 bg-violet-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
             <VehicleDropdown
-              vehicles={vehicles}
+              vehicles={vehicles.filter(v => v.fuel_type && v.fuel_type.toLowerCase() === 'electric')}
               selectedId={selectedEV}
               onSelect={setSelectedEV}
               label="Select EV"
               className="text-violet-700"
             />
-            <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center'>
-              <img
-                src='https://via.placeholder.com/240x120?text=EV'
-                alt='EV Car'
-                className='object-contain h-full'
-              />
-            </div>
-            <div className='text-center mb-3'>
-              <div className='font-semibold text-lg'>Tesla Model 3</div>
-              <div className='text-sm text-gray-500'>
-                Range: 220 miles | 0-60mph: 5.6s
-              </div>
-            </div>
-            <ul className='text-base text-gray-700 space-y-1 mb-4'>
-              <li>Lease: £310/mo</li>
-              <li>Electricity: £40/mo</li>
-              <li>Maintenance: £25/mo</li>
-            </ul>
-            <div className='w-full bg-violet-100 rounded p-3 text-center mt-auto'>
-              <div className='font-semibold'>3-Year Total Cost</div>
-              <div className='text-xl font-bold text-violet-700'>£14,220</div>
-              <div className='text-xs text-gray-500'>
-                (Lease + Electricity + Maintenance)
-              </div>
-            </div>
+            <VehicleDetails
+              vehicle={vehicles.find(v => v.uuid === selectedEV)}
+              type="ev"
+            />
           </div>
           {/* Petrol Column */}
           <div className='flex-1 bg-orange-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
             <VehicleDropdown
-              vehicles={vehicles}
+              vehicles={vehicles.filter(v => v.fuel_type && v.fuel_type.toLowerCase() !== 'electric')}
               selectedId={selectedPetrol}
               onSelect={setSelectedPetrol}
-              label="Select Petrol Car"
+              label="Select ICE Car"
               className="text-orange-700"
             />
-            <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center'>
-              <img
-                src='https://via.placeholder.com/240x120?text=Mercedes+C-Class'
-                alt='Mercedes C-Class'
-                className='object-contain h-full'
-              />
-            </div>
-            <div className='text-center mb-3'>
-              <div className='font-semibold text-lg'>Mercedes C-Class</div>
-              <div className='text-sm text-gray-500'>
-                MPG: 30 | 0-60mph: 6.0s
-              </div>
-            </div>
-            <ul className='text-base text-gray-700 space-y-1 mb-4'>
-              <li>Purchase Price: £38,000</li>
-              <li>Resale (3yr): £22,000</li>
-              <li>Fuel: £140/mo</li>
-              <li>Maintenance: £60/mo</li>
-            </ul>
-            <div className='w-full bg-orange-100 rounded p-3 text-center mt-auto'>
-              <div className='font-semibold'>3-Year Total Cost</div>
-              <div className='text-xl font-bold text-orange-700'>£19,320</div>
-              <div className='text-xs text-gray-500'>
-                (Depreciation + Fuel + Maintenance)
-              </div>
-            </div>
+            <VehicleDetails
+              vehicle={vehicles.find(v => v.uuid === selectedPetrol)}
+              type="ice"
+            />
           </div>
         </section>
         {/* Feature Note Section */}
