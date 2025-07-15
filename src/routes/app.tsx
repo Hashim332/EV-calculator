@@ -1,80 +1,81 @@
 import Navbar from "../components/Navbar";
-import { useState, useEffect } from 'react'
-import { supabase } from '../supabase.ts'
-import VehicleDropdown from '../components/VehicleDropdown'
-import VehicleDetails from '../components/VehicleDetails'
+import { useState, useEffect } from "react";
+import { supabase } from "../supabase.ts";
+import VehicleDropdown from "../components/VehicleDropdown";
+import VehicleDetails from "../components/VehicleDetails";
 
 interface Vehicle {
-  uuid: string
-  make: string
-  model: string
-  type: string
-  msrp_gbp: number
-  lease_monthly: number
-  max_range: number
-  battery_size: number
-  efficiency: number
-  efficiency_mpg: number
-  segment: string
-  depreciation_3yr_percent: number
-  maintenance_gbp_per_year: number
-  fuel_type: string
-  image_url?: string
+  uuid: string;
+  make: string;
+  model: string;
+  type: string;
+  msrp_gbp: number;
+  lease_monthly: number;
+  max_range: number;
+  battery_size: number;
+  efficiency: number;
+  efficiency_mpg: number;
+  segment: string;
+  depreciation_3yr_percent: number;
+  maintenance_gbp_per_year: number;
+  fuel_type: string;
+  image_url?: string;
 }
 
 function App() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedEV, setSelectedEV] = useState<string | null>(null)
-  const [selectedPetrol, setSelectedPetrol] = useState<string | null>(null)
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedEV, setSelectedEV] = useState<string | null>(null);
+  const [selectedPetrol, setSelectedPetrol] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        
-        const { data, error: fetchError } = await supabase
-          .from('vehicle-data')
-          .select('*')
-        
-        if (fetchError) {
-          throw fetchError
-        }
-        
-        setVehicles(data || [])
-        console.log('Fetched vehicles:', data)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
-        setError(errorMessage)
-        console.error('Error fetching vehicles:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
+        setLoading(true);
+        setError(null);
 
-    fetchVehicles()
-  }, [])
+        const { data, error: fetchError } = await supabase
+          .from("vehicle-data")
+          .select("*");
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        setVehicles(data || []);
+        console.log("Fetched vehicles:", data);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        console.error("Error fetching vehicles:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
 
   if (loading) {
     return (
       <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50'>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
-        <p className="mt-4 text-gray-600">Loading vehicles...</p>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600'></div>
+        <p className='mt-4 text-gray-600'>Loading vehicles...</p>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50'>
-        <div className="text-red-600 text-center max-w-md">
-          <h2 className="text-xl font-semibold mb-2">Error Loading Vehicles</h2>
-          <p className="text-sm">{error}</p>
+        <div className='text-red-600 text-center max-w-md'>
+          <h2 className='text-xl font-semibold mb-2'>Error Loading Vehicles</h2>
+          <p className='text-sm'>{error}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -92,7 +93,11 @@ function App() {
             Lease or Buy? Make the Smart Choice!
           </h2>
           <p className='text-gray-600'>
-            This website helps you compare the cost of leasing an electric vehicle (EV), which is a popular option right now, versus buying a petrol or diesel (ICE) car outright. See how lease payments, running costs, and resale values stack up so you can make the most informed decision for your needs.
+            This website helps you compare the cost of leasing an electric
+            vehicle (EV), which is a popular option right now, versus buying a
+            petrol or diesel (ICE) car outright. See how lease payments, running
+            costs, and resale values stack up so you can make the most informed
+            decision for your needs.
           </p>
         </section>
         {/* Comparison Section */}
@@ -100,29 +105,33 @@ function App() {
           {/* EV Column */}
           <div className='flex-1 bg-violet-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
             <VehicleDropdown
-              vehicles={vehicles.filter(v => v.fuel_type && v.fuel_type.toLowerCase() === 'electric')}
+              vehicles={vehicles.filter(
+                (v) => v.fuel_type && v.fuel_type.toLowerCase() === "electric"
+              )}
               selectedId={selectedEV}
               onSelect={setSelectedEV}
-              label="Select EV"
-              className="text-violet-700"
+              label='Select EV'
+              className='text-violet-700'
             />
             <VehicleDetails
-              vehicle={vehicles.find(v => v.uuid === selectedEV)}
-              type="ev"
+              vehicle={vehicles.find((v) => v.uuid === selectedEV)}
+              type='ev'
             />
           </div>
           {/* Petrol Column */}
           <div className='flex-1 bg-orange-50 rounded-xl p-8 flex flex-col items-center min-h-[340px]'>
             <VehicleDropdown
-              vehicles={vehicles.filter(v => v.fuel_type && v.fuel_type.toLowerCase() !== 'electric')}
+              vehicles={vehicles.filter(
+                (v) => v.fuel_type && v.fuel_type.toLowerCase() !== "electric"
+              )}
               selectedId={selectedPetrol}
               onSelect={setSelectedPetrol}
-              label="Select ICE Car"
-              className="text-orange-700"
+              label='Select Petrol Car'
+              className='text-orange-700'
             />
             <VehicleDetails
-              vehicle={vehicles.find(v => v.uuid === selectedPetrol)}
-              type="ice"
+              vehicle={vehicles.find((v) => v.uuid === selectedPetrol)}
+              type='ice'
             />
           </div>
         </section>
