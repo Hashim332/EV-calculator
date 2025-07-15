@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./routes/app";
 import "./index.css";
+import { inject } from "@vercel/analytics";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -21,3 +22,6 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </StrictMode>
 );
+
+// Initialize Vercel Analytics
+inject();
