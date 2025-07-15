@@ -1,11 +1,5 @@
 import React from "react";
-
-interface Vehicle {
-  uuid: string;
-  make: string;
-  model: string;
-  segment: string;
-}
+import type { Vehicle } from "../types";
 
 interface VehicleDropdownProps {
   vehicles: Vehicle[];
@@ -50,15 +44,15 @@ const VehicleDropdown: React.FC<VehicleDropdownProps> = ({
 
   return (
     <div className={`mb-4 md:mb-6 ${className}`}>
-      <label className='mb-2 font-medium text-sm block text-center w-full'>
+      <label className="mb-2 font-medium text-sm block text-center w-full">
         {label}
       </label>
       <select
         value={selectedId || ""}
         onChange={handleChange}
-        className='p-3 md:p-4 rounded border w-full text-sm'
+        className="p-3 md:p-4 rounded border w-full text-sm"
       >
-        <option value=''>Select a vehicle</option>
+        <option value="">Select a vehicle</option>
         {vehicles && vehicles.length > 0
           ? sortedSegments.map((segment) => (
               <optgroup key={segment} label={segment}>

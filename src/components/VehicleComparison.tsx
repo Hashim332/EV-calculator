@@ -1,22 +1,5 @@
 import React from "react";
-
-interface Vehicle {
-  uuid: string;
-  make: string;
-  model: string;
-  type: string;
-  msrp_gbp: number;
-  lease_monthly: number | null;
-  max_range: number | null;
-  battery_size: number | null;
-  efficiency_mpkwh: number | null;
-  efficiency_mpg: number | null;
-  segment: string;
-  depreciation_3yr_percent: number | null;
-  maintenance_gbp_per_year: number;
-  fuel_type: string;
-  image_url: string | null;
-}
+import type { Vehicle } from "../types";
 
 interface VehicleComparisonProps {
   vehicle1: Vehicle | null;
@@ -64,8 +47,8 @@ const VehicleComparison: React.FC<VehicleComparisonProps> = ({
         return formatValue(value, true);
       case "maintenance_gbp_per_year":
         return formatValue(value, true);
-      case "depreciation_3yr_percent":
-        return formatValue(value, false, true);
+      case "depreciation_band":
+        return formatValue(value);
       case "max_range":
         return value ? `${value} miles` : "N/A";
       case "battery_size":
@@ -93,31 +76,31 @@ const VehicleComparison: React.FC<VehicleComparisonProps> = ({
   ];
 
   return (
-    <div className='w-full overflow-x-auto mb-4 md:mb-6'>
-      <table className='w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm'>
+    <div className="w-full overflow-x-auto mb-4 md:mb-6">
+      <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm">
         <thead>
-          <tr className='bg-gray-50'>
-            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
+          <tr className="bg-gray-50">
+            <th className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700">
               Attribute
             </th>
-            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
+            <th className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700">
               Vehicle 1
             </th>
-            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
+            <th className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700">
               Vehicle 2
             </th>
           </tr>
         </thead>
         <tbody>
           {attributes.map(({ key, label }) => (
-            <tr key={key} className='hover:bg-gray-50'>
-              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 font-medium text-gray-700'>
+            <tr key={key} className="hover:bg-gray-50">
+              <td className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 font-medium text-gray-700">
                 {label}
               </td>
-              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600'>
+              <td className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600">
                 {getVehicleValue(vehicle1, key)}
               </td>
-              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600'>
+              <td className="border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600">
                 {getVehicleValue(vehicle2, key)}
               </td>
             </tr>
