@@ -13,7 +13,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({
     <label className='font-medium text-base mb-2'>
       Select ownership/lease period:
     </label>
-    <div className='flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none'>
+    <div className='flex flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none justify-center'>
       {[24, 36, 48].map((months) => (
         <button
           key={months}

@@ -50,7 +50,9 @@ const VehicleDropdown: React.FC<VehicleDropdownProps> = ({
 
   return (
     <div className={`mb-4 md:mb-6 ${className}`}>
-      <label className='mb-2 font-medium text-sm block'>{label}</label>
+      <label className='mb-2 font-medium text-sm block text-center w-full'>
+        {label}
+      </label>
       <select
         value={selectedId || ""}
         onChange={handleChange}
