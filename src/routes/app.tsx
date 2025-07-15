@@ -1,8 +1,7 @@
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase.ts";
-import VehicleDropdown from "../components/VehicleDropdown";
-import VehicleDetails from "../components/VehicleDetails";
+
 import ExplanatorySection from "../components/ExplanatorySection";
 import PeriodSelector from "../components/PeriodSelector";
 import VehicleComparisonSection from "../components/VehicleComparisonSection";
