@@ -1,10 +1,20 @@
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase.ts";
-import ExplanatorySection from "../components/ExplanatorySection";
 import PeriodSelector from "../components/PeriodSelector";
 import VehicleComparisonSection from "../components/VehicleComparisonSection";
 import ExternalLinksSection from "../components/ExternalLinksSection";
+import {
+  WhatDoesThisToolDoSection,
+  HowToUseSection,
+  ExplanatoryAccordion,
+} from "../components/ExplanatorySection";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "../components/ui/accordion";
 
 interface Vehicle {
   uuid: string;
@@ -91,7 +101,7 @@ function App() {
         </h1>
       </header>
       {/* Explanatory Section: Purpose and How to Use */}
-      <ExplanatorySection />
+      {/* <ExplanatorySection /> */}
       <main className='w-full max-w-3xl bg-white rounded-2xl shadow-lg p-10 min-h-[300px] flex flex-col items-center justify-center'>
         {/* Top section: catchy heading and description */}
         <section className='mb-8 w-full text-center'>
@@ -101,9 +111,7 @@ function App() {
           <p className='text-sm text-gray-600'>
             This website helps you compare the cost of leasing an electric
             vehicle (EV), which is a popular option right now, versus buying a
-            petrol or diesel (ICE) car outright. See how lease payments, running
-            costs, and resale values stack up so you can make the most informed
-            decision for your needs.
+            petrol or diesel (ICE) car outright.
           </p>
         </section>
         {/* Period Selection Section */}
@@ -120,9 +128,6 @@ function App() {
           setSelectedPetrol={setSelectedPetrol}
           periodMonths={periodMonths}
         />
-        {/* Feature Note Section */}
-        <div className='w-full max-w-2xl mx-auto mb-8 text-xs text-gray-400 text-center'></div>
-        {/* Transparency Note Section */}
         <div className='w-full max-w-2xl mx-auto mb-8 text-xs text-gray-500 text-center'>
           <span>
             <strong>Note:</strong> Electricity cost is estimated at £0.30 per
@@ -130,6 +135,12 @@ function App() {
             per litre. These values may not reflect your actual rates.
           </span>
         </div>
+        {/* Explanatory Accordion Section */}
+        <ExplanatoryAccordion />
+        {/* Feature Note Section */}
+        <div className='w-full max-w-2xl mx-auto mb-8 text-xs text-gray-400 text-center'></div>
+        {/* Transparency Note Section */}
+
         {/* External Links Section: Car Buying & Leasing Sites */}
         <ExternalLinksSection />
       </main>

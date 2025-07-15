@@ -180,19 +180,27 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
     );
   }
 
+  const [imgError, setImgError] = React.useState(false);
+
   return (
     <>
       <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center p-4 mx-auto'>
-        <img
-          src={
-            vehicle.image_url ||
-            (type === "ev"
-              ? "https://via.placeholder.com/240x120?text=EV"
-              : "https://via.placeholder.com/240x120?text=ICE")
-          }
-          alt={vehicle.make + " " + vehicle.model}
-          className='object-contain h-full w-full'
-        />
+        {vehicle.image_url && !imgError ? (
+          <img
+            src={vehicle.image_url}
+            alt={vehicle.make + " " + vehicle.model}
+            className='object-contain h-full w-full'
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className='flex items-center justify-center w-full h-full text-gray-400 text-sm'>
+            {vehicle.image_url && imgError
+              ? "Image not available"
+              : type === "ev"
+              ? "No EV image"
+              : "No ICE image"}
+          </div>
+        )}
       </div>
       <div className='text-center mb-3'>
         <div className='font-semibold text-base'>
