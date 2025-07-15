@@ -93,17 +93,17 @@ const VehicleComparison: React.FC<VehicleComparisonProps> = ({
   ];
 
   return (
-    <div className='w-full overflow-x-auto'>
+    <div className='w-full overflow-x-auto mb-4 md:mb-6'>
       <table className='w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm'>
         <thead>
           <tr className='bg-gray-50'>
-            <th className='border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700'>
+            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
               Attribute
             </th>
-            <th className='border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700'>
+            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
               Vehicle 1
             </th>
-            <th className='border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700'>
+            <th className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-left font-semibold text-gray-700'>
               Vehicle 2
             </th>
           </tr>
@@ -111,13 +111,13 @@ const VehicleComparison: React.FC<VehicleComparisonProps> = ({
         <tbody>
           {attributes.map(({ key, label }) => (
             <tr key={key} className='hover:bg-gray-50'>
-              <td className='border border-gray-300 px-4 py-3 font-medium text-gray-700'>
+              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 font-medium text-gray-700'>
                 {label}
               </td>
-              <td className='border border-gray-300 px-4 py-3 text-gray-600'>
+              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600'>
                 {getVehicleValue(vehicle1, key)}
               </td>
-              <td className='border border-gray-300 px-4 py-3 text-gray-600'>
+              <td className='border border-gray-300 px-3 py-2 md:px-4 md:py-3 text-gray-600'>
                 {getVehicleValue(vehicle2, key)}
               </td>
             </tr>
