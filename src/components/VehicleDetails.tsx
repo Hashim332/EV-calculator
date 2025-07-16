@@ -7,6 +7,7 @@ interface VehicleDetailsProps {
   periodMonths: number;
   electricityPrice?: number; // £/kWh, only for EV
   fuelPrice?: number; // £/Litre, only for ICE
+  mode?: "buy" | "lease"; // Add mode prop
 }
 
 // Tooltip component for hoverable info
@@ -30,6 +31,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
   periodMonths,
   electricityPrice = 0.3,
   fuelPrice = 1.45,
+  mode = type === "ev" ? "lease" : "buy", // default fallback
 }) => {
   if (!vehicle) {
     return (
@@ -42,6 +44,10 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
       </div>
     );
   }
+
+  // Determine if this mode is supported for this vehicle type
+  const isSupported =
+    (type === "ev" && mode === "lease") || (type === "ice" && mode === "buy");
 
   // Calculate depreciation based on band and time period
   const calculateDepreciatedValue = (
@@ -203,29 +209,43 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
             : null}
         </div>
       </div>
-      {/* Remove user input for energy/fuel price here */}
-      <ul className='text-sm text-gray-700 space-y-1 mb-4'>{costDetails}</ul>
-      <div
-        className={`w-full rounded p-4 md:p-6 text-center mt-auto ${
-          type === "ev" ? "bg-violet-100" : "bg-orange-100"
-        }`}
-      >
-        <div className='font-semibold text-sm'>
-          Estimated {years}-Year Total Cost
+      {/* Only show cost details if mode is supported */}
+      {isSupported ? (
+        <>
+          <ul className='text-sm text-gray-700 space-y-1 mb-4'>
+            {costDetails}
+          </ul>
+          <div
+            className={`w-full rounded p-4 md:p-6 text-center mt-auto ${
+              type === "ev" ? "bg-violet-100" : "bg-orange-100"
+            }`}
+          >
+            <div className='font-semibold text-sm'>
+              Estimated {years}-Year Total Cost
+            </div>
+            <div
+              className={`text-lg font-bold ${
+                type === "ev" ? "text-violet-700" : "text-orange-700"
+              }`}
+            >
+              £{totalCost.toLocaleString()}
+            </div>
+            <div className='text-xs text-gray-500'>
+              {type === "ev"
+                ? "(Lease + Electricity + Maintenance)"
+                : "(Depreciation + Fuel + Maintenance)"}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className='w-full rounded p-4 md:p-6 text-center mt-auto bg-gray-100 text-gray-500'>
+          {type === "ev" && mode === "buy"
+            ? "Buying EVs is not supported yet."
+            : type === "ice" && mode === "lease"
+            ? "Leasing ICE vehicles is not supported yet."
+            : null}
         </div>
-        <div
-          className={`text-lg font-bold ${
-            type === "ev" ? "text-violet-700" : "text-orange-700"
-          }`}
-        >
-          £{totalCost.toLocaleString()}
-        </div>
-        <div className='text-xs text-gray-500'>
-          {type === "ev"
-            ? "(Lease + Electricity + Maintenance)"
-            : "(Depreciation + Fuel + Maintenance)"}
-        </div>
-      </div>
+      )}
     </>
   );
 };

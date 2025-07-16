@@ -29,7 +29,7 @@ export default function Footer() {
               Contact
             </button>
           </div>
-          <div className='text-xs text-gray-400'>© 2024 EV Calculator</div>
+          <div className='text-xs text-gray-400'>© 2025 EV Calculator</div>
         </div>
       </footer>
 
