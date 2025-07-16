@@ -12,10 +12,10 @@ const Tooltip: React.FC<{ message: string; children: React.ReactNode }> = ({
   message,
   children,
 }) => (
-  <div className="relative group inline-block">
+  <div className='relative group inline-block'>
     {children}
-    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
-      <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
+    <div className='absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20'>
+      <span className='bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90'>
         {message}
       </span>
     </div>
@@ -29,9 +29,9 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 }) => {
   if (!vehicle) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-        <div className="w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center">
-          <span className="text-sm">
+      <div className='w-full h-full flex flex-col items-center justify-center text-gray-400'>
+        <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center'>
+          <span className='text-sm'>
             Select a {type === "ev" ? "EV" : "ICE Car"}
           </span>
         </div>
@@ -155,9 +155,9 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
             Maintenance: £{maintenanceMonthly}/mo
           </Tooltip>
         </li>
-        <li className="text-xs text-gray-500 pt-1">
+        <li className='text-xs text-gray-500 pt-1'>
           Depreciation band: {band}{" "}
-          {bandDrop && <span className="ml-1">{bandDrop}</span>}
+          {bandDrop && <span className='ml-1'>{bandDrop}</span>}
         </li>
       </>
     );
@@ -167,16 +167,16 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 
   return (
     <>
-      <div className="w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center p-4 mx-auto">
+      <div className='w-64 h-40 bg-gray-200 rounded mb-4 flex items-center justify-center p-4 mx-auto'>
         {vehicle.image_url && !imgError ? (
           <img
             src={vehicle.image_url}
             alt={vehicle.make + " " + vehicle.model}
-            className="object-contain h-full w-full"
+            className='object-contain h-full w-full'
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="flex items-center justify-center w-full h-full text-gray-400 text-sm">
+          <div className='flex items-center justify-center w-full h-full text-gray-400 text-sm'>
             {vehicle.image_url && imgError
               ? "Image not available"
               : type === "ev"
@@ -185,11 +185,11 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
           </div>
         )}
       </div>
-      <div className="text-center mb-3">
-        <div className="font-semibold text-base">
+      <div className='text-center mb-3'>
+        <div className='font-semibold text-base'>
           {vehicle.make} {vehicle.model}
         </div>
-        <div className="text-xs text-gray-500">
+        <div className='text-xs text-gray-500'>
           {type === "ev" && vehicle.max_range
             ? `Range: ${vehicle.max_range} miles`
             : null}
@@ -198,13 +198,15 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
             : null}
         </div>
       </div>
-      <ul className="text-sm text-gray-700 space-y-1 mb-4">{costDetails}</ul>
+      <ul className='text-sm text-gray-700 space-y-1 mb-4'>{costDetails}</ul>
       <div
         className={`w-full rounded p-4 md:p-6 text-center mt-auto ${
           type === "ev" ? "bg-violet-100" : "bg-orange-100"
         }`}
       >
-        <div className="font-semibold text-sm">{years}-Year Total Cost</div>
+        <div className='font-semibold text-sm'>
+          Estimated {years}-Year Total Cost
+        </div>
         <div
           className={`text-lg font-bold ${
             type === "ev" ? "text-violet-700" : "text-orange-700"
@@ -212,7 +214,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
         >
           £{totalCost.toLocaleString()}
         </div>
-        <div className="text-xs text-gray-500">
+        <div className='text-xs text-gray-500'>
           {type === "ev"
             ? "(Lease + Electricity + Maintenance)"
             : "(Depreciation + Fuel + Maintenance)"}
