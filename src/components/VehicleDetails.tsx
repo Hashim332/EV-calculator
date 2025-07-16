@@ -5,6 +5,8 @@ interface VehicleDetailsProps {
   vehicle?: Vehicle;
   type: "ev" | "ice";
   periodMonths: number;
+  electricityPrice?: number; // £/kWh, only for EV
+  fuelPrice?: number; // £/Litre, only for ICE
 }
 
 // Tooltip component for hoverable info
@@ -26,6 +28,8 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
   vehicle,
   type,
   periodMonths,
+  electricityPrice = 0.3,
+  fuelPrice = 1.45,
 }) => {
   if (!vehicle) {
     return (
@@ -78,7 +82,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 
     const milesPerYear = 10000;
     const kWhPerYear = milesPerYear / vehicle.efficiency_mpkwh;
-    const electricityPricePerKWh = 0.3; // £0.30 per kWh (UK average)
+    const electricityPricePerKWh = electricityPrice; // Use prop
     const annualElectricityCost = kWhPerYear * electricityPricePerKWh;
 
     return Math.round(annualElectricityCost / 12); // Monthly cost
@@ -90,7 +94,8 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
 
     const milesPerYear = 10000;
     const gallonsPerYear = milesPerYear / vehicle.efficiency_mpg;
-    const fuelPricePerGallon = 6.59; // £6.59 per gallon (UK average, ~£1.45 per litre)
+    // Convert user input £/Litre to £/Gallon (UK gallon = 4.54609 litres)
+    const fuelPricePerGallon = fuelPrice * 4.54609;
     const annualFuelCost = gallonsPerYear * fuelPricePerGallon;
 
     return Math.round(annualFuelCost / 12); // Monthly cost
@@ -198,6 +203,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
             : null}
         </div>
       </div>
+      {/* Remove user input for energy/fuel price here */}
       <ul className='text-sm text-gray-700 space-y-1 mb-4'>{costDetails}</ul>
       <div
         className={`w-full rounded p-4 md:p-6 text-center mt-auto ${
