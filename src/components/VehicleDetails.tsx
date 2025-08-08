@@ -1,6 +1,8 @@
 import React from "react";
 import type { Vehicle } from "../types";
 import type { Currency } from "./CurrencyConverter";
+import { X } from "lucide-react";
+import { calculateVehicleCosts } from "../utils/calculateVehicleCosts";
 
 interface VehicleDetailsProps {
   vehicle?: Vehicle;
@@ -22,12 +24,17 @@ function Tooltip({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative group inline-block">
-      {children}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
-        <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
-          {message}
-        </span>
+    <div className="flex flex-row justify-between border p-2 rounded-md items-center">
+      <div className="relative group ">
+        {children}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
+          <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
+            {message}
+          </span>
+        </div>
+      </div>
+      <div className="px-2 hover:cursor-pointer">
+        <X className="w-4 h-4 hover:text-red-500" />
       </div>
     </div>
   );
@@ -55,94 +62,40 @@ function VehicleDetails({
     );
   }
 
-  // Determine if this mode is supported for this vehicle type
-  const isSupported =
-    (type === "ev" && mode === "lease") || (type === "ice" && mode === "buy");
+  const breakdown = calculateVehicleCosts({
+    vehicle,
+    type,
+    periodMonths,
+    electricityPrice,
+    fuelPrice,
+    selectedCurrency,
+    mode,
+  });
 
-  // Calculate depreciation based on band and time period
-  const calculateDepreciatedValue = (
-    initialValue: number,
-    depreciationBand: string,
-    years: number
-  ): number => {
-    // Non-linear depreciation model: Value(t) = Initial * (Final/Initial)^(t/3)
-    // High depreciation: 60% value remaining after 3 years (40% depreciation)
-    // Low depreciation: 77.5% value remaining after 3 years (22.5% depreciation)
+  const {
+    isSupported,
+    years,
+    leaseMonthly,
+    maintenanceMonthly,
+    purchasePrice,
+    resaleValue,
+    depreciationAmount,
+    depreciationBand,
+    depreciationBandLabel,
+    electricityMonthly,
+    fuelMonthly,
+    totalCost,
+  } = breakdown;
 
-    const threeYearRetentionRate =
-      depreciationBand.toLowerCase() === "high" ? 0.6 : 0.775;
-    const retentionRate = Math.pow(threeYearRetentionRate, years / 3);
-
-    return Math.round(initialValue * retentionRate);
-  };
-
-  // Calculations based on new schema
-  const lease = vehicle.lease_monthly || 0;
-  const maintenanceMonthly = vehicle.maintenance_gbp_per_year
-    ? Math.round(vehicle.maintenance_gbp_per_year / 12)
-    : 0;
-  const purchase = Number(vehicle.msrp_gbp) || 0;
-  const years = periodMonths / 12;
-  const resale =
-    type === "ice"
-      ? calculateDepreciatedValue(
-          purchase,
-          vehicle.depreciation_band || "high",
-          years
-        )
-      : 0;
-
-  // Calculate electricity cost for EVs based on 10,000 miles per year
-  const calculateElectricityCost = () => {
-    if (type !== "ev" || !vehicle.efficiency_mpkwh) return 0;
-
-    const milesPerYear = 10000;
-    const kWhPerYear = milesPerYear / vehicle.efficiency_mpkwh;
-    const electricityPricePerKWh = electricityPrice; // Use prop
-    const annualElectricityCost = kWhPerYear * electricityPricePerKWh;
-
-    return Math.round(annualElectricityCost / 12); // Monthly cost
-  };
-
-  // Calculate fuel cost for ICE cars based on 10,000 miles per year
-  const calculateFuelCost = () => {
-    if (type !== "ice" || !vehicle.efficiency_mpg) return 0;
-
-    const milesPerYear = 10000;
-    const gallonsPerYear = milesPerYear / vehicle.efficiency_mpg;
-
-    // Handle different fuel price units based on currency
-    let fuelPricePerGallon;
-    if (selectedCurrency === "USD") {
-      // For USD, input is already in $/Gallon
-      fuelPricePerGallon = fuelPrice;
-    } else {
-      // For GBP and EUR, input is in £/Litre or €/Litre, convert to per gallon
-      // UK gallon = 4.54609 litres
-      fuelPricePerGallon = fuelPrice * 4.54609;
-    }
-
-    const annualFuelCost = gallonsPerYear * fuelPricePerGallon;
-
-    return Math.round(annualFuelCost / 12); // Monthly cost
-  };
-
-  const electricityMonthly = calculateElectricityCost();
-  const fuelMonthly = calculateFuelCost();
-
-  let totalCost = 0;
-  let costDetails = null;
-
+  let costDetails = null as React.ReactNode;
   if (type === "ev") {
-    totalCost =
-      lease * periodMonths +
-      maintenanceMonthly * periodMonths +
-      electricityMonthly * periodMonths;
     costDetails = (
       <>
         <li>
-          <Tooltip message={`${formatCurrency(lease * periodMonths)} total`}>
-            Lease: {formatCurrency(lease)}/mo
+          <Tooltip
+            message={`${formatCurrency(leaseMonthly * periodMonths)} total`}
+          >
+            Lease: {formatCurrency(leaseMonthly)}/mo
           </Tooltip>
         </li>
         <li>
@@ -166,22 +119,11 @@ function VehicleDetails({
       </>
     );
   } else {
-    totalCost =
-      purchase -
-      resale +
-      fuelMonthly * periodMonths +
-      maintenanceMonthly * periodMonths;
-    const depreciationAmount = purchase - resale;
-    // Calculate % drop for depreciation band
-    const band = vehicle.depreciation_band || "unknown";
-    let bandDrop = "";
-    if (band.toLowerCase() === "high") bandDrop = "(40% drop)";
-    else if (band.toLowerCase() === "low") bandDrop = "(22.5% drop)";
     costDetails = (
       <>
-        <li>Purchase Price: {formatCurrency(purchase)}</li>
+        <li>Purchase Price: {formatCurrency(purchasePrice)}</li>
         <li>
-          Resale ({years}yr): {formatCurrency(resale)}
+          Resale ({years}yr): {formatCurrency(resaleValue)}
         </li>
         <li>Depreciation: {formatCurrency(depreciationAmount)}</li>
         <li>
@@ -201,8 +143,10 @@ function VehicleDetails({
           </Tooltip>
         </li>
         <li className="text-xs text-gray-500 pt-1">
-          Depreciation band: {band}{" "}
-          {bandDrop && <span className="ml-1">{bandDrop}</span>}
+          Depreciation band: {depreciationBand || "unknown"}{" "}
+          {depreciationBandLabel && (
+            <span className="ml-1">{depreciationBandLabel}</span>
+          )}
         </li>
       </>
     );
