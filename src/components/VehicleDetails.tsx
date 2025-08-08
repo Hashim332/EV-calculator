@@ -14,21 +14,26 @@ interface VehicleDetailsProps {
 }
 
 // Tooltip component for hoverable info
-const Tooltip: React.FC<{ message: string; children: React.ReactNode }> = ({
+function Tooltip({
   message,
   children,
-}) => (
-  <div className="relative group inline-block">
-    {children}
-    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
-      <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
-        {message}
-      </span>
+}: {
+  message: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="relative group inline-block">
+      {children}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
+        <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
+          {message}
+        </span>
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
-const VehicleDetails: React.FC<VehicleDetailsProps> = ({
+function VehicleDetails({
   vehicle,
   type,
   periodMonths,
@@ -37,7 +42,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
   mode = type === "ev" ? "lease" : "buy", // default fallback
   selectedCurrency = "GBP",
   formatCurrency = (amount: number) => `£${amount.toLocaleString()}`,
-}) => {
+}: VehicleDetailsProps) {
   if (!vehicle) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
@@ -277,6 +282,6 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({
       )}
     </>
   );
-};
+}
 
 export default VehicleDetails;

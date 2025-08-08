@@ -13,13 +13,13 @@ interface ModeButtonProps {
   className?: string;
 }
 
-const ModeButton: React.FC<ModeButtonProps> = ({
+function ModeButton({
   children,
   isSelected,
   onClick,
   colorScheme,
   className = "",
-}) => {
+}: ModeButtonProps) {
   const baseClasses =
     "w-24 px-4 py-2 rounded-md text-sm font-medium transition-colors border";
 
@@ -50,7 +50,7 @@ const ModeButton: React.FC<ModeButtonProps> = ({
       {children}
     </button>
   );
-};
+}
 
 interface VehicleComparisonSectionProps {
   vehicles: Vehicle[];
@@ -63,7 +63,7 @@ interface VehicleComparisonSectionProps {
   formatCurrency: (amount: number) => string;
 }
 
-const VehicleComparisonSection: React.FC<VehicleComparisonSectionProps> = ({
+function VehicleComparisonSection({
   vehicles,
   selectedEV,
   setSelectedEV,
@@ -72,7 +72,7 @@ const VehicleComparisonSection: React.FC<VehicleComparisonSectionProps> = ({
   periodMonths,
   selectedCurrency,
   formatCurrency,
-}) => {
+}: VehicleComparisonSectionProps) {
   // State for user-input prices
   const [electricityPrice, setElectricityPrice] = React.useState(0.3); // £/kWh
   const [fuelPrice, setFuelPrice] = React.useState(1.45); // £/Litre
@@ -223,6 +223,6 @@ const VehicleComparisonSection: React.FC<VehicleComparisonSectionProps> = ({
       </div>
     </section>
   );
-};
+}
 
 export default VehicleComparisonSection;

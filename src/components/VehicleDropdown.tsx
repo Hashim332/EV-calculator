@@ -9,13 +9,13 @@ interface VehicleDropdownProps {
   className?: string;
 }
 
-const VehicleDropdown: React.FC<VehicleDropdownProps> = ({
+function VehicleDropdown({
   vehicles,
   selectedId,
   onSelect,
   label,
   className = "",
-}) => {
+}: VehicleDropdownProps) {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     onSelect(selectedValue === "" ? null : selectedValue);
@@ -67,6 +67,6 @@ const VehicleDropdown: React.FC<VehicleDropdownProps> = ({
       </select>
     </div>
   );
-};
+}
 
 export default VehicleDropdown;

@@ -1,4 +1,3 @@
-import React from "react";
 import type { Vehicle } from "../types";
 
 interface VehicleComparisonProps {
@@ -6,10 +5,7 @@ interface VehicleComparisonProps {
   vehicle2: Vehicle | null;
 }
 
-const VehicleComparison: React.FC<VehicleComparisonProps> = ({
-  vehicle1,
-  vehicle2,
-}) => {
+function VehicleComparison({ vehicle1, vehicle2 }: VehicleComparisonProps) {
   const formatValue = (
     value: any,
     isCurrency: boolean = false,
@@ -109,5 +105,5 @@ const VehicleComparison: React.FC<VehicleComparisonProps> = ({
       </table>
     </div>
   );
-};
+}
 export default VehicleComparison;

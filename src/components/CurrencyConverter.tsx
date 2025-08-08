@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export type Currency = "GBP" | "EUR" | "USD";
 
@@ -48,11 +48,11 @@ export const convertCurrency = (
   return amount * EXCHANGE_RATES[fromCurrency][toCurrency];
 };
 
-const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
+function CurrencyConverter({
   selectedCurrency,
   onCurrencyChange,
   className = "",
-}) => {
+}: CurrencyConverterProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleCurrencySelect = (currency: Currency) => {
@@ -121,6 +121,6 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
       )}
     </div>
   );
-};
+}
 
 export default CurrencyConverter;
