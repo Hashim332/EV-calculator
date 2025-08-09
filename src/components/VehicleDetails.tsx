@@ -64,6 +64,8 @@ function VehicleDetails({
     totalCost,
   } = breakdown;
 
+  // TODO: ADD STATE FOR TRACKING SELECTED COSTS
+
   let costDetails = null as React.ReactNode;
   if (type === "ev") {
     costDetails = (
