@@ -1,7 +1,7 @@
 import React from "react";
 import type { Vehicle } from "../types";
 import type { Currency } from "./CurrencyConverter";
-import VehicleDetailListItem from "./VehicleDetailListItem";
+import VehicleCostList from "./VehicleCostList";
 import { calculateVehicleCosts } from "../utils/calculateVehicleCosts";
 
 interface VehicleDetailsProps {
@@ -39,7 +39,7 @@ function VehicleDetails({
     );
   }
 
-  const breakdown = calculateVehicleCosts({
+  const { breakdown, vehicleInfo } = calculateVehicleCosts({
     vehicle,
     type,
     periodMonths,
@@ -49,78 +49,10 @@ function VehicleDetails({
     mode,
   });
 
-  const {
-    isSupported,
-    years,
-    leaseMonthly,
-    maintenanceMonthly,
-    purchasePrice,
-    resaleValue,
-    depreciationAmount,
-    depreciationBand,
-    depreciationBandLabel,
-    electricityMonthly,
-    fuelMonthly,
-    totalCost,
-  } = breakdown;
+  const { isSupported, years, totalCost } = breakdown;
 
   // TODO: ADD STATE FOR TRACKING SELECTED COSTS
-
-  let costDetails = null as React.ReactNode;
-  if (type === "ev") {
-    costDetails = (
-      <>
-        <VehicleDetailListItem
-          message={`${formatCurrency(leaseMonthly * periodMonths)} total`}
-          section="ev"
-        >
-          Lease: {formatCurrency(leaseMonthly)}/mo
-        </VehicleDetailListItem>
-        <VehicleDetailListItem
-          message={`${formatCurrency(electricityMonthly * periodMonths)} total`}
-          section="ev"
-        >
-          Electricity: {formatCurrency(electricityMonthly)}/mo
-        </VehicleDetailListItem>
-        <VehicleDetailListItem
-          message={`${formatCurrency(maintenanceMonthly * periodMonths)} total`}
-          section="ev"
-        >
-          Maintenance: {formatCurrency(maintenanceMonthly)}/mo
-        </VehicleDetailListItem>
-      </>
-    );
-  } else {
-    costDetails = (
-      <>
-        <VehicleDetailListItem message="Purchase Price">
-          {formatCurrency(purchasePrice)}
-        </VehicleDetailListItem>
-        <VehicleDetailListItem message="Resale">
-          Resale ({years}yr): {formatCurrency(resaleValue)}
-        </VehicleDetailListItem>
-        <VehicleDetailListItem message="Depreciation">
-          {formatCurrency(depreciationAmount)}
-        </VehicleDetailListItem>
-        <VehicleDetailListItem
-          message={`${formatCurrency(fuelMonthly * periodMonths)} total`}
-        >
-          Fuel: {formatCurrency(fuelMonthly)}/mo
-        </VehicleDetailListItem>
-        <VehicleDetailListItem
-          message={`${formatCurrency(maintenanceMonthly * periodMonths)} total`}
-        >
-          Maintenance: {formatCurrency(maintenanceMonthly)}/mo
-        </VehicleDetailListItem>
-        <li className="text-xs text-gray-500 pt-1">
-          Depreciation band: {depreciationBand || "unknown"}{" "}
-          {depreciationBandLabel && (
-            <span className="ml-1">{depreciationBandLabel}</span>
-          )}
-        </li>
-      </>
-    );
-  }
+  // const [selectedCosts, setSelectedCosts] = useState<string[]>([]);
 
   const [imgError, setImgError] = React.useState(false);
 
@@ -160,9 +92,14 @@ function VehicleDetails({
       {/* Only show cost details if mode is supported */}
       {isSupported ? (
         <>
-          <ul className="text-sm text-gray-700 space-y-1 mb-4">
-            {costDetails}
-          </ul>
+          <VehicleCostList
+            type={type}
+            breakdown={breakdown}
+            vehicleInfo={vehicleInfo}
+            periodMonths={periodMonths}
+            formatCurrency={formatCurrency}
+          />
+
           <div
             className={`w-full rounded p-4 md:p-6 text-center mt-auto ${
               type === "ev" ? "bg-violet-100" : "bg-orange-100"

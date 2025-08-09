@@ -22,19 +22,21 @@ export interface VehicleCostBreakdown {
   leaseMonthly: number;
   maintenanceMonthly: number;
 
-  // Purchase and depreciation
-  purchasePrice: number;
-  resaleValue: number;
-  depreciationAmount: number;
-  depreciationBand: string | undefined;
-  depreciationBandLabel: string; // e.g., "(40% drop)" | "(22.5% drop)" | ""
-
   // Running costs
   electricityMonthly: number; // EV
   fuelMonthly: number; // ICE
 
   // Total for the selected horizon and type
   totalCost: number;
+}
+
+export interface VehicleInfo {
+  // Purchase and depreciation (intrinsic vehicle info)
+  purchasePrice: number;
+  resaleValue: number;
+  depreciationAmount: number;
+  depreciationBand: string | undefined;
+  depreciationBandLabel: string; // e.g., "(40% drop)" | "(22.5% drop)" | ""
 }
 
 // Flow overview:
@@ -56,9 +58,10 @@ function calculateDepreciatedValue(
   return Math.round(initialValue * retentionRate);
 }
 
-export function calculateVehicleCosts(
-  inputs: VehicleCostInputs
-): VehicleCostBreakdown {
+export function calculateVehicleCosts(inputs: VehicleCostInputs): {
+  breakdown: VehicleCostBreakdown;
+  vehicleInfo: VehicleInfo;
+} {
   const {
     vehicle,
     type,
@@ -135,18 +138,23 @@ export function calculateVehicleCosts(
       maintenanceMonthly * periodMonths;
   }
 
-  return {
+  const breakdown: VehicleCostBreakdown = {
     isSupported,
     years,
     leaseMonthly,
     maintenanceMonthly,
+    electricityMonthly,
+    fuelMonthly,
+    totalCost,
+  };
+
+  const vehicleInfo: VehicleInfo = {
     purchasePrice,
     resaleValue,
     depreciationAmount,
     depreciationBand,
     depreciationBandLabel,
-    electricityMonthly,
-    fuelMonthly,
-    totalCost,
   };
+
+  return { breakdown, vehicleInfo };
 }
