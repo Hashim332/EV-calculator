@@ -70,16 +70,19 @@ function VehicleDetails({
       <>
         <VehicleDetailListItem
           message={`${formatCurrency(leaseMonthly * periodMonths)} total`}
+          section="ev"
         >
           Lease: {formatCurrency(leaseMonthly)}/mo
         </VehicleDetailListItem>
         <VehicleDetailListItem
           message={`${formatCurrency(electricityMonthly * periodMonths)} total`}
+          section="ev"
         >
           Electricity: {formatCurrency(electricityMonthly)}/mo
         </VehicleDetailListItem>
         <VehicleDetailListItem
           message={`${formatCurrency(maintenanceMonthly * periodMonths)} total`}
+          section="ev"
         >
           Maintenance: {formatCurrency(maintenanceMonthly)}/mo
         </VehicleDetailListItem>
@@ -88,11 +91,15 @@ function VehicleDetails({
   } else {
     costDetails = (
       <>
-        <li>Purchase Price: {formatCurrency(purchasePrice)}</li>
-        <li>
+        <VehicleDetailListItem message="Purchase Price">
+          {formatCurrency(purchasePrice)}
+        </VehicleDetailListItem>
+        <VehicleDetailListItem message="Resale">
           Resale ({years}yr): {formatCurrency(resaleValue)}
-        </li>
-        <li>Depreciation: {formatCurrency(depreciationAmount)}</li>
+        </VehicleDetailListItem>
+        <VehicleDetailListItem message="Depreciation">
+          {formatCurrency(depreciationAmount)}
+        </VehicleDetailListItem>
         <VehicleDetailListItem
           message={`${formatCurrency(fuelMonthly * periodMonths)} total`}
         >
