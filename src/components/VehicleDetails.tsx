@@ -1,7 +1,7 @@
 import React from "react";
 import type { Vehicle } from "../types";
 import type { Currency } from "./CurrencyConverter";
-import { X } from "lucide-react";
+import VehicleDetailListItem from "./VehicleDetailListItem";
 import { calculateVehicleCosts } from "../utils/calculateVehicleCosts";
 
 interface VehicleDetailsProps {
@@ -15,30 +15,7 @@ interface VehicleDetailsProps {
   formatCurrency?: (amount: number) => string;
 }
 
-// Tooltip component for hoverable info
-function Tooltip({
-  message,
-  children,
-}: {
-  message: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-row justify-between border p-2 rounded-md items-center">
-      <div className="relative group ">
-        {children}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex z-20">
-          <span className="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg transition-all opacity-90">
-            {message}
-          </span>
-        </div>
-      </div>
-      <div className="px-2 hover:cursor-pointer">
-        <X className="w-4 h-4 hover:text-red-500" />
-      </div>
-    </div>
-  );
-}
+// extracted tooltip wrapper component in `ListItemWithTooltip`
 
 function VehicleDetails({
   vehicle,
@@ -91,31 +68,21 @@ function VehicleDetails({
   if (type === "ev") {
     costDetails = (
       <>
-        <li>
-          <Tooltip
-            message={`${formatCurrency(leaseMonthly * periodMonths)} total`}
-          >
-            Lease: {formatCurrency(leaseMonthly)}/mo
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip
-            message={`${formatCurrency(
-              electricityMonthly * periodMonths
-            )} total`}
-          >
-            Electricity: {formatCurrency(electricityMonthly)}/mo
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip
-            message={`${formatCurrency(
-              maintenanceMonthly * periodMonths
-            )} total`}
-          >
-            Maintenance: {formatCurrency(maintenanceMonthly)}/mo
-          </Tooltip>
-        </li>
+        <VehicleDetailListItem
+          message={`${formatCurrency(leaseMonthly * periodMonths)} total`}
+        >
+          Lease: {formatCurrency(leaseMonthly)}/mo
+        </VehicleDetailListItem>
+        <VehicleDetailListItem
+          message={`${formatCurrency(electricityMonthly * periodMonths)} total`}
+        >
+          Electricity: {formatCurrency(electricityMonthly)}/mo
+        </VehicleDetailListItem>
+        <VehicleDetailListItem
+          message={`${formatCurrency(maintenanceMonthly * periodMonths)} total`}
+        >
+          Maintenance: {formatCurrency(maintenanceMonthly)}/mo
+        </VehicleDetailListItem>
       </>
     );
   } else {
@@ -126,22 +93,16 @@ function VehicleDetails({
           Resale ({years}yr): {formatCurrency(resaleValue)}
         </li>
         <li>Depreciation: {formatCurrency(depreciationAmount)}</li>
-        <li>
-          <Tooltip
-            message={`${formatCurrency(fuelMonthly * periodMonths)} total`}
-          >
-            Fuel: {formatCurrency(fuelMonthly)}/mo
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip
-            message={`${formatCurrency(
-              maintenanceMonthly * periodMonths
-            )} total`}
-          >
-            Maintenance: {formatCurrency(maintenanceMonthly)}/mo
-          </Tooltip>
-        </li>
+        <VehicleDetailListItem
+          message={`${formatCurrency(fuelMonthly * periodMonths)} total`}
+        >
+          Fuel: {formatCurrency(fuelMonthly)}/mo
+        </VehicleDetailListItem>
+        <VehicleDetailListItem
+          message={`${formatCurrency(maintenanceMonthly * periodMonths)} total`}
+        >
+          Maintenance: {formatCurrency(maintenanceMonthly)}/mo
+        </VehicleDetailListItem>
         <li className="text-xs text-gray-500 pt-1">
           Depreciation band: {depreciationBand || "unknown"}{" "}
           {depreciationBandLabel && (
